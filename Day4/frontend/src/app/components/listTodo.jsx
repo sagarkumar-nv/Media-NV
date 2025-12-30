@@ -12,7 +12,7 @@ export default function ListTodos() {
                 setData(result.data);
                 console.log(result.data);
             }catch(err){
-                console.eror(err);
+                console.error(err);
             }
         };
         fetchData();
