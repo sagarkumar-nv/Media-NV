@@ -1,55 +1,65 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "../context/AuthContext";
+import { useState, useContext } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const { login } = useAuth();
   const router = useRouter();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: ""
+  });
 
-  const handleLogin = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Login failed");
-
-      login(data.token);
-      router.push("/tasks");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login(formData);
+    setFormData({
+      username: "",
+      password: ""
+    })
+    router.push('/tasks');
+  }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+      <div className="bg-white p-8 rounded-xl shadow-xl w-[380px]">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h1>
 
-      <input
-        placeholder="Enter username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+        <form onSubmit={handleSubmit}>
+          <input 
+            type="text" 
+            placeholder="Enter your Username" 
+            value={formData.username} 
+            onChange={(e) => setFormData({...formData, username: e.target.value})}
+            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            required
+          />
+          <input 
+            type="password" 
+            placeholder="Enter your Password" 
+            value={formData.password} 
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            required
+          />
+          <button 
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition font-semibold mb-4"
+          >
+            Login
+          </button>
+        </form>
 
-      <button onClick={handleLogin} disabled={loading}>
-        {loading ? "Logging in..." : "Login"}
-      </button>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
-  );
+        <p className="text-gray-600 text-center mb-2">Don't have an account?</p>
+        <Link 
+          href="/register"
+          className="block text-center bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition font-semibold"
+        >
+          Sign Up
+        </Link>
+      </div>
+    </main>
+  )
 }

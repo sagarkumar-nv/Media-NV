@@ -1,14 +1,22 @@
-const validateTask = (req, res, next) => {
-    const { title }= req.body;
-
-    if(!title || typeof title !== 'string' || title.trim() === '') {
-        return res.status(400).json({
-            message: 'Invalid task title'
-        });
-        console.log('Validation failed: Invalid task title');
+const validateUser = (req, res, next) => {
+    const { username, password }= req.body;
+    try {
+        if (!username || typeof username !== 'string' || username.length < 3) {
+            return res.status(400).json({
+                 message: "Invalid username" 
+                });
+        }   
+        if (!password || typeof password !== 'string' || password.length < 6) {
+            return res.status(400).json({ 
+                message: "Invalid password" 
+            });
+        }
+        next();
+    } catch (err) {
+        console.error("Validation Error", err);
+        res.status(500).json({ 
+            message: "Internal Server Error"
+         });
     }
-    next();
-
-}
-
-export default validateTask;
+};
+export default validateUser;
