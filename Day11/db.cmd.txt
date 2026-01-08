@@ -1,0 +1,50 @@
+//Sql Commands: 
+
+//Database Creation: 
+CREATE DATABASE testdb;
+DROP DATABASE testdb;
+\l          -- list databases
+\c          testdb -- connect to database
+
+//Table Creation:
+CREATE TABLE person (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50),
+  email VARCHAR(100),
+  age INT,
+  role VARCHAR(50),
+  department VARCHAR(50),
+  married BOOLEAN
+);
+
+//Insert Data:
+INSERT INTO person (name, email, age, role, department, married)
+VALUES ('Sagar Kumar', 'sagar@gmail.com', 23, 'Developer', 'Software', false);
+
+
+//Read Data:
+SELECT * FROM person;
+
+SELECT name, email FROM person;
+
+SELECT * FROM person WHERE age > 20;
+
+
+//Update Data:
+UPDATE person
+SET role = 'Senior Developer'
+WHERE name = 'Sagar Kumar';
+
+
+//Delete Data:
+DELETE FROM person WHERE name = 'Sagar Kumar';
+
+//View Table:
+\dt          -- list tables
+\d person    -- table structure
+
+
+//Drop Table:
+DROP TABLE person;
+
+
