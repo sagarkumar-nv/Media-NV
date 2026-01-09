@@ -1,0 +1,125 @@
+ PostgreSQL Advanced
+
+ //Sql Commands: 
+
+//Database Creation: 
+CREATE DATABASE testdb;
+DROP DATABASE testdb;
+\l          -- list databases
+\c          testdb -- connect to database
+
+//Table Creation:
+CREATE TABLE person (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50),
+  email VARCHAR(100),
+  age INT,
+  role VARCHAR(50),
+  department VARCHAR(50),
+  married BOOLEAN
+);
+
+//Insert Data:
+INSERT INTO person (name, email, age, role, department, married)
+VALUES ('Sagar Kumar', 'sagar@gmail.com', 23, 'Developer', 'Software', false);
+
+
+//Read Data:
+SELECT * FROM person;
+
+SELECT name, email FROM person;
+
+SELECT * FROM person WHERE age > 20;
+
+
+//Update Data:
+UPDATE person
+SET role = 'Senior Developer'
+WHERE name = 'Sagar Kumar';
+
+
+//Delete Data:
+DELETE FROM person WHERE name = 'Sagar Kumar';
+
+//View Table:
+\dt          -- list tables
+\d person    -- table structure
+
+
+//Drop Table:
+DROP TABLE person;
+
+
+// Advanced SQL queries
+
+CTE(Common Table Expression)
+
+WITH high_salary AS (
+    SELECT * FROM employees WHERE salary > 50000
+)
+SELECT * FROM high_salary;
+
+
+SELECT name 
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+
+SELECT name, salary,
+       RANK() OVER (ORDER BY salary DESC)
+FROM employees;
+
+//Indexing:
+CREATE INDEX idx_salary ON employees(salary);
+
+
+//Transactions:
+BEGIN;
+
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+
+COMMIT;
+
+//Stored Procedures / Functions:
+CREATE OR REPLACE FUNCTION get_bonus(salary INT)
+RETURNS INT AS $$
+BEGIN
+  RETURN salary * 0.1;
+END;
+$$ LANGUAGE plpgsql;
+
+
+Trigers: Triggers run automatically when events occur
+//BEFORE Trigger:
+CREATE TRIGGER before_insert_user
+BEFORE INSERT ON users
+FOR EACH ROW
+EXECUTE FUNCTION validate_user();
+
+//AFTER Trigger:
+CREATE TRIGGER after_insert_user
+AFTER INSERT ON users
+FOR EACH ROW
+EXECUTE FUNCTION log_user();
+
+//Triggers are used for Auditing, Validation, Cascade, Logging.
+
+//Audit Trigger
+CREATE OR REPLACE FUNCTION log_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO audit_log(table_name, action)
+  VALUES ('users', 'UPDATE');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+//Error Handling:
+BEGIN
+  INSERT INTO users VALUES (1, NULL);
+EXCEPTION
+  WHEN others THEN
+    RAISE NOTICE 'Error occurred';
+END;
+
