@@ -1,58 +1,58 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
-export class StudentService {
+export class STUDENTService {
     private students = [
-        {id: 1, name: 'Sagar', age: 22},
-        {id: 2, name: 'Anita', age: 21},
-        {id: 3, name: 'Ramesh', age: 23},
-        {id: 4, name: 'Sunita', age: 20},
-        {id: 5, name: 'Alex', age: 54}
+        { id: 1, name: 'Sagar', age: 22 },
+        { id: 2, name: 'Anita', age: 21 },
+        { id: 3, name: 'Ramesh', age: 23 },
+        { id: 4, name: 'Sunita', age: 20 },
+        { id: 5, name: 'Alex', age: 54 }
     ];
 
-    getAllStudents() {
+    getAllSTUDENTs() {
         return this.students;
     }
-    getStudentById(id: number) {
+    getSTUDENTById(id: number) {
         const student = this.students.find((s) =>
             s.id === id);
-        if(!student) throw new NotFoundException(
-            'Student Not Found!'
+        if (!student) throw new NotFoundException(
+            'STUDENT Not Found!'
         )
 
         return student;
     }
 
-    createStudent(data: {name: string; age: number}){
-        const newStudent = {
+    createSTUDENT(data: { name: string; age: number }) {
+        const newSTUDENT = {
             id: Date.now(),
             ...data,
         };
-        this.students.push(newStudent);
-        return newStudent;
+        this.students.push(newSTUDENT);
+        return newSTUDENT;
     }
-    
-    updateStudent(id: number, data: {name: string; age: number}) {
+
+    updateSTUDENT(id: number, data: { name: string; age: number }) {
         const index = this.students.findIndex((s) => s.id === id);
-        if(index === -1) throw new NotFoundException(
-            'Student Not Found!'
+        if (index === -1) throw new NotFoundException(
+            'STUDENT Not Found!'
         )
-        this.students[index] = { id, ...data};
+        this.students[index] = { id, ...data };
         return this.students[index];
     }
 
-    patchStudent(id: number, data: Partial<{ name: string; age: number }>) {        //Partial use to get any value
-        const student = this.getStudentById(id);
+    patchSTUDENT(id: number, data: Partial<{ name: string; age: number }>) {        //Partial use to get any value
+        const student = this.getSTUDENTById(id);
         Object.assign(student, data);           //Object.assign create a copy of given id and update only the given data.
         return student;
     }
 
-    deleteStudent(id: number){
+    deleteSTUDENT(id: number) {
         const index = this.students.findIndex((s) => s.id === id);
-        if(index === -1) throw new NotFoundException('Student not Found');
+        if (index === -1) throw new NotFoundException('STUDENT not Found');
 
         const deleted = this.students.splice(index, 1);     //remove one index at a time
-        return { message: 'student Deleted', student: deleted[0]}       //Splice returnt the array of deleted items
+        return { message: 'student Deleted', student: deleted[0] }       //Splice returnt the array of deleted items
     }
 
 }

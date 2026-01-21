@@ -27,7 +27,7 @@ export class User {
     @Column({
         type: 'enum',
         enum: GENDER,
-        default: GENDER.MALE
+        default: GENDER.FEMALE
     })
     gender: GENDER;
 

@@ -1,6 +1,8 @@
 // create-user.dto.ts
-import { IsNotEmpty, IsEmail, MinLength, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsEmail, MinLength, IsOptional, IsIn } from 'class-validator';
 import { ROLE } from '../../common/enum/role.enum';
+import { GENDER } from '../../common/enum/gender.enum';
+
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -12,6 +14,16 @@ export class CreateUserDto {
   @MinLength(6)
   password: string;
 
-  @IsEnum(ROLE)
-  role: ROLE;
+    @IsIn(Object.values(ROLE), {
+          message: "Role must be STUDENT or TEACHER only."
+      })
+      @IsOptional()
+      role?: ROLE;
+  
+      @IsIn(
+          Object.values(GENDER), {
+          message: "Gender must be MALE or FEMALE only."
+      })
+      @IsOptional()
+      gender?: GENDER;
 }
