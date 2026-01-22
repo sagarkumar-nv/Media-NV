@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Redirect already logged-in users
+  //Redirect already logged-in users
   useEffect(() => {
     if (user?.role) {
       switch (user.role) {

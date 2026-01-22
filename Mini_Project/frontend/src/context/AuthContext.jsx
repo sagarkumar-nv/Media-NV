@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -7,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {  // <-- children must be passed
+export function AuthProvider({ children }) {  
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +27,7 @@ export function AuthProvider({ children }) {  // <-- children must be passed
   try {
     const res = await api.post("/auth/login", { email, password });
     const token = res.data.data.token;
-    const userData = res.data.data.user; // <- extract user object
+    const userData = res.data.data.user;
 
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userData));

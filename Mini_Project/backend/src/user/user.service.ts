@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException, BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
@@ -73,6 +73,10 @@ export class UserService {
     password: hashedPassword,
     role: dto.role
   });
+  const existingUser = await this.repo.findOne({
+    where: { email: dto.email }
+  });
+  if(existingUser)  throw new BadGatewayException('Email already registered')
 
   return this.repo.save(user);
 }
