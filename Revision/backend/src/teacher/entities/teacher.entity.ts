@@ -1,6 +1,6 @@
 import { ClassEntity } from "src/classes/entities/class.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('teacher')
 export class Teacher {
@@ -16,5 +16,8 @@ export class Teacher {
 
     @OneToOne(() => ClassEntity, classes => classes.teacher)
     class: ClassEntity;
+
+    @Column({ default: true })
+    isActive: boolean;
 
 }

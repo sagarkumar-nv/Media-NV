@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsIn, IsOptional } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsIn, IsOptional, IsEnum } from 'class-validator'
 import { ROLE } from 'src/common/enum/role.enum';
 export class RegisterUserDto {
     @IsString()
@@ -15,13 +15,11 @@ export class RegisterUserDto {
     password: string;
 
     @IsString({ message: "Gender must be Male, Female or Others."})
-    @IsNotEmpty()
-    gender: string;
+    @IsOptional()
+    gender?: string;
 
     @IsOptional()
-    @IsIn(Object.values(ROLE), {
-        message: "Role must be Student ot Teacher."
-    })
+    @IsEnum(ROLE) 
     role?: ROLE;
 
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Res, Response } from '@nestjs/common';
+import { BadRequestException, Injectable, Res, Response, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
@@ -7,11 +7,15 @@ import { RegisterUserDto } from './dto/register.dto';
 import { ROLE } from 'src/common/enum/role.enum';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login.dto';
+import { Teacher } from 'src/teacher/entities/teacher.entity';
+import { Student } from 'src/student/entities/student.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private repo: Repository<User>,
+        @InjectRepository(Teacher) private teacherRepo: Repository<Teacher>,
+        @InjectRepository(Student) private studentRepo: Repository<Student>,
         private jwt: JwtService
     ){}
 
@@ -23,6 +27,7 @@ export class AuthService {
         if(dto.role === ROLE.Admin) throw new BadRequestException('Unauthorized! You cannot register as Admin.')
         
         const hashedPassword = await bcrypt.hash(dto.password, 15);
+       // console.log(hashedPassword)
 
         const role = dto.role === 'Teacher' ? ROLE.Teacher : ROLE.Student;
 
@@ -32,34 +37,39 @@ export class AuthService {
             name: dto.name,
             email: dto.email,
             password: hashedPassword,
-            role: role,
+            role: dto.role,
             gender: dto.gender
         });
 
-        //const savedUser = await this.userRepository.save(user);
-        // 2️⃣ Role-based table insert
-//   if (role === ROLE.STUDENT) {
-//     const student = this.studentRepository.create({
-//       user: savedUser,
-//     });
-//     await this.studentRepository.save(student);
-//   }
+        const savedUser = await this.repo.save(user);
+    
+        if (role === ROLE.Student) {
+            const student = this.studentRepo.create({
+            user: savedUser,
+            });
+            await this.studentRepo.save(student);
+        }
 
-//   if (role === ROLE.TEACHER) {
-//     const teacher = this.teacherRepository.create({
-//       user: savedUser,
-//     });
-//     await this.teacherRepository.save(teacher);
-//   }
+        if (role === ROLE.Teacher) {
+            const teacher = this.teacherRepo.create({
+            user: savedUser,
+            });
+            await this.teacherRepo.save(teacher);
+        }
 
 
         return this.repo.save(user);
     }
 
     async login(dto: LoginUserDto) {
+
         const user = await this.repo.findOne({
             where: { email: dto.email}
         });
+        
+        if (!user || user.status === false) {
+            throw new UnauthorizedException("Account is inactive");
+        }
         if(!user) throw new BadRequestException('User not found! check the email!.')
         
         const match = await bcrypt.compare(dto.password, user.password);
@@ -68,7 +78,7 @@ export class AuthService {
 
         const token = await this.jwt.sign(
              {id: user.id, role: user.role},
-             { secret: process.env.JWT_SECRET, expiresIn: '15m' } 
+             { secret: process.env.JWT_SECRET, expiresIn: '30m' } 
         );
 
         const refreshToken = await this.jwt.sign(
@@ -79,6 +89,6 @@ export class AuthService {
 
         const { password, ...safeUser } = user;
 
-        return { token, refreshToken, safeUser}
+        return { token, refreshToken, safeUser }
     }
 }

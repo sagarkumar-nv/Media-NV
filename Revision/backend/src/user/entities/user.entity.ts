@@ -11,14 +11,14 @@ export class User {
     @Column()
     name: string;
 
-    @Column()
+    @Column({unique: true})
     email: string;
 
     @Column()
     password: string;
 
-    @Column({ nullable: true})
-    contact?: string;
+    @Column({ default: null })
+    contact: string;
 
     @Column({
         type: 'enum',

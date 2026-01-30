@@ -27,8 +27,9 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
     ) {
         const { token, refreshToken, safeUser } = await this.service.login(dto);
+        
         res.cookie("token", token, {
-            httpOnly: true, secure: false, sameSite: 'lax', maxAge: 15*60*1000
+            httpOnly: true, secure: false, sameSite: 'lax', maxAge: 30*60*1000
         });
 
         res.cookie('refreshToken', refreshToken, {
@@ -69,13 +70,4 @@ export class AuthController {
         message: 'Logged out successfully',
     };
     };
-
-    @Post('me')
-    checkToken(@Req() req: Request) {
-        const refreshToken = req.cookies?.refreshToken;
-
-        if(!refreshToken) {
-            throw new UnauthorizedException('Refresh token missing!');
-        }
-    }
 }

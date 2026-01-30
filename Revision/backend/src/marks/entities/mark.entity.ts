@@ -1,5 +1,5 @@
 import { Student } from "src/student/entities/student.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('marks')
 export class Mark {
@@ -12,6 +12,7 @@ export class Mark {
     @Column()
     mark: number;
 
-    @OneToOne(() => Student, student => student.mark)
+    @ManyToOne(() => Student, student => student.mark, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'studentId'})
     student: Student;
 }

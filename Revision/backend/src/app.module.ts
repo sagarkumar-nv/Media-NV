@@ -10,6 +10,7 @@ import { TeacherModule } from './teacher/teacher.module';
 import { ClassesModule } from './classes/classes.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { MarksModule } from './marks/marks.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { MarksModule } from './marks/marks.module';
       migrationsRun: false
 
     })
-    ,UserModule, AuthModule, StudentModule, TeacherModule, ClassesModule, AttendanceModule, MarksModule],
+    ,UserModule, AuthModule, StudentModule, TeacherModule, ClassesModule, AttendanceModule, MarksModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

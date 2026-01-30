@@ -54,3 +54,25 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+
+
+routes:
+admin routes:
+Get:   /admin/users : get all users
+Post:    /admin/users   create user(teacher or student)
+patch:   /admin/user/:id/role : update role
+patch   /admin/convert/student-to-teacher/:id   
+patch: /admin/convert/teacher-to-student/:id
+Post    /admin/classes : create classes
+patch:  /admin/classes/:id/assign-teacher : assign teacher
+patch:  /admin/classes/:id/assign-students : assign students
+Get:    /admin/classes/:id/students : get class students
+
+teacher routes:
+GET    /teacher/my-class
+GET    /teacher/my-class/students
+GET    /teacher/student/:id
+PATCH  /teacher/student/:id
+POST   /teacher/student/:id/marks
+POST   /teacher/student/:id/attendance

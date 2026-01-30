@@ -14,7 +14,7 @@ export class ClassEntity {
     section: string;
 
     @OneToMany(() => Student, student => student.class)
-    student: Student;
+    students: Student[];
 
     @OneToOne(() => Teacher, teacher => teacher.class)
     @JoinColumn({ name: 'teacherId'})
